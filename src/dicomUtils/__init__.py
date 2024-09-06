@@ -16,5 +16,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import flexidep
+from . import resources
+flexidep.standard_install_from_resource(resources, 'runtime_dependencies.cfg')
+
 from .dicom3D import load3dDicom, save3dDicom
 from .misc import loadDicomFile
