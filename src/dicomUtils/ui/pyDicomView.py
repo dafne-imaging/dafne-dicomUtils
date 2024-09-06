@@ -518,7 +518,7 @@ class ImageShow:
 
 
 # when called as a script, load all the images in the directory
-def main():
+def main(cls=ImageShow):
     import argparse
     from qtpy.QtWidgets import QApplication, QFileDialog
     parser = argparse.ArgumentParser(description='DICOM Viewer')
@@ -531,14 +531,14 @@ def main():
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
         file_filter = "DICOM Files (*.dcm *.ima);;NIfTI Files (*.nii *.nii.gz);;NumPy Files (*.npz);;All Files (*)"
-        file_path, _ = QFileDialog.getOpenFileName(None, "Select DICOM File", "", file_filter, options=options)
+        file_path, _ = QFileDialog.getOpenFileName(None, "Select File to open", "", file_filter, options=options)
         if file_path:
             args.path = file_path
         else:
             print("No file selected. Exiting.")
             sys.exit(1)
 
-    imFig = ImageShow()
+    imFig = cls()
     imFig.scroll_debounce_time = float(args.debounce) / 1000
     imFig.loadDirectory(args.path)
     plt.show()
