@@ -51,7 +51,7 @@ DEFAULT_INTERPOLATION = 'spline36'
 # DEFAULT_INTERPOLATION = 'none' # DEBUG
 INVERT_SCROLL = True
 DO_DEBUG = False
-MOUSE_SCROLL_DEBOUNCE_TIME = 0.2
+MOUSE_SCROLL_DEBOUNCE_TIME = 0.1
 
 
 class ImListProxy:
@@ -70,7 +70,7 @@ class ImageShow:
     contrastWindow = None
     channelBalance = np.array([1.0, 1.0, 1.0])
 
-    def __init__(self, im=None, axes=None, window=None, cmap=None):
+    def __init__(self, im=None, axes=None, window=None, cmap=None, debounce_time=MOUSE_SCROLL_DEBOUNCE_TIME):
         ImageShow.contrastWindow = window
 
         self.imPlot = None
@@ -100,7 +100,7 @@ class ImageShow:
         self.resolution_valid = False
         self.affine = None
         self.medical_volume = None
-        self.scroll_debounce_time = MOUSE_SCROLL_DEBOUNCE_TIME
+        self.scroll_debounce_time = debounce_time
         self.last_scroll_time = 0
 
         self.interpolation = DEFAULT_INTERPOLATION
@@ -519,6 +519,26 @@ class ImageShow:
 
 # when called as a script, load all the images in the directory
 def main():
+    import argparse
+    from qtpy.QtWidgets import QApplication, QFileDialog
+    parser = argparse.ArgumentParser(description='DICOM Viewer')
+    parser.add_argument('-d', '--debounce', type=int, default=int(MOUSE_SCROLL_DEBOUNCE_TIME*1000), help='Mouse scroll debounce time in milliseconds')
+    parser.add_argument('path', nargs='?', default=None, help='Path to the directory containing DICOM files')
+    args = parser.parse_args()
+
+    if args.path is None:
+        app = QApplication(sys.argv)
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+        file_filter = "DICOM Files (*.dcm *.ima);;NIfTI Files (*.nii *.nii.gz);;NumPy Files (*.npz);;All Files (*)"
+        file_path, _ = QFileDialog.getOpenFileName(None, "Select DICOM File", "", file_filter, options=options)
+        if file_path:
+            args.path = file_path
+        else:
+            print("No file selected. Exiting.")
+            sys.exit(1)
+
     imFig = ImageShow()
-    imFig.loadDirectory(sys.argv[1])
+    imFig.scroll_debounce_time = float(args.debounce) / 1000
+    imFig.loadDirectory(args.path)
     plt.show()
