@@ -17,12 +17,10 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
-try:
-    import pydicom as dicom
-    import pydicom.uid as UID
-except:
-    import dicom
-    import dicom.UID as UID
+
+import pydicom as dicom
+import pydicom.uid as UID
+
 import os
 import os.path
 import copy
@@ -41,7 +39,7 @@ def load3dDicom(path):
         fname, ext = os.path.splitext(f)
         if ext.lower() in allowed_ext:
             try:
-                dFile = dicom.read_file(os.path.join(basepath, f))
+                dFile = dicom.dcmread(os.path.join(basepath, f))
                 pixelIma = dFile.pixel_array
                 threeDlist.append(np.copy(pixelIma.astype('float32')))
                 dFile.PixelData = ""
@@ -91,7 +89,7 @@ def save3dDicom(volume, info, path, newSeriesNumber = None, newSeriesDescription
             dicomFileData.ImageComment = newImageComment
         
         fName = os.path.join(path, "image0001.dcm") # if one wants to save a part of a dataset
-        dicom.write_file(fName, dicomFileData)
+        dicom.dcmwrite(fName, dicomFileData)
     else:
         bar = Bar('Saving Dicom', max=len(info))
         for sl in range(len(info)):
@@ -108,7 +106,7 @@ def save3dDicom(volume, info, path, newSeriesNumber = None, newSeriesDescription
                 dicomFileData.ImageComment = newImageComment
             
             fName = os.path.join(path, "image%04d.dcm" % (sl+startImageNumber)) # if one wants to save a part of a dataset
-            dicom.write_file(fName, dicomFileData)
+            dicom.dcmwrite(fName, dicomFileData)
             bar.next()
         bar.finish()
 

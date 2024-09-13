@@ -33,7 +33,7 @@ class ConversionError(Exception):
     pass
 
 def loadDicomFile(fname):
-    ds = dicom.read_file(fname)
+    ds = dicom.dcmread(fname)
     # rescale dynamic range to 0-4095
     try:
         pixelData = ds.pixel_array.astype(np.float32)
@@ -146,7 +146,7 @@ def dosma_volume_from_path(path, parent_qobject = None, reorient_data = True, so
         load_dicom_dir = False
         if os.path.isfile(path):
             basepath = os.path.dirname(path)
-            dataset = pydicom.read_file(path, force=True)
+            dataset = pydicom.dcmread(path, force=True)
             if is_enhanced_dicom(dataset):
                 if is_multi_dicom(dataset):
                     multi_dicom_dataset = load_multi_dicom(dataset)
@@ -197,7 +197,7 @@ def dosma_volume_from_path(path, parent_qobject = None, reorient_data = True, so
                 for f in sorted(l):
                     if os.path.basename(f).startswith('.'): continue
                     try:
-                        dFile = dicom.read_file(os.path.join(basepath, f), force=True)
+                        dFile = dicom.dcmread(os.path.join(basepath, f), force=True)
                     except:
                         print("Error loading", f)
                         continue

@@ -21,10 +21,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import voxel
 
-try:
-    import pydicom as dicom
-except:
-    import dicom
+import pydicom as dicom
+
 import numpy as np
 import os
 import sys
@@ -429,7 +427,7 @@ class ImageShow:
         return resolution, resolution_valid
 
     def loadDicomFile(self, fname):
-        ds = dicom.read_file(fname)
+        ds = dicom.dcmread(fname)
         # rescale dynamic range to 0-4095
         try:
             pixelData = ds.pixel_array.astype(np.float32)
