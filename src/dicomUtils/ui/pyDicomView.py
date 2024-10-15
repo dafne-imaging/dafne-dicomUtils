@@ -397,6 +397,7 @@ class ImageShow:
     def calcContrast(self, im):
         maxVal = np.percentile(im, 90)
         if maxVal <= 1: maxVal = np.max(im.flat)
+        if maxVal == 0: maxVal = 1
         return (0, maxVal)  # stretch contrast to remove outliers
 
     def setCmap(self, cmap, redraw=True):
