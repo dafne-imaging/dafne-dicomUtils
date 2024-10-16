@@ -23,3 +23,4 @@ flexidep.standard_install_from_resource(resources, 'runtime_dependencies.cfg')
 from .dicom3D import load3dDicom, save3dDicom
 from .misc import loadDicomFile, dosma_volume_from_path, realign_medical_volume
 medical_volume_from_path = dosma_volume_from_path
+from .padorcut import padorcut

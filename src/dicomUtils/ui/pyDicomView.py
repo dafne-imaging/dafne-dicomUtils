@@ -287,11 +287,14 @@ class ImageShow:
 
     def isCursorNormal(self):
         try:
-            isCursorNormal = (self.fig.canvas.cursor().shape() == CursorShape.ArrowCursor)  # if backend is qt, it gets the shape of the
+            cursor = self.fig.canvas.cursor().shape()
             # cursor. 0 is the arrow, which means we are not zooming or panning.
         except:
-            isCursorNormal = True
-        return isCursorNormal
+            return True
+        if isinstance(CursorShape.ArrowCursor, int):
+            return cursor.value == CursorShape.ArrowCursor
+        else:
+            return cursor == CursorShape.ArrowCursor
 
     def leftPressCB(self, event):
         pass
@@ -335,6 +338,7 @@ class ImageShow:
         pass
 
     def resetContrast(self):
+        print("Resetting contrast")
         ImageShow.contrastWindow = self.calcContrast(self.image)
         if not self.isImageRGB:
             self.imPlot.set_clim(ImageShow.contrastWindow)
