@@ -115,6 +115,8 @@ class ImageShow:
         if im is not None:
             if type(im) is np.ndarray:
                 self.loadNumpyArray(im)
+            elif isinstance(im, voxel.MedicalVolume):
+                self.loadNumpyArray(im.volume)
             elif type(im) is str:
                 if os.path.isdir(im):
                     self.loadDirectory(im)
@@ -291,7 +293,8 @@ class ImageShow:
             # cursor. 0 is the arrow, which means we are not zooming or panning.
         except:
             return True
-        if isinstance(CursorShape.ArrowCursor, int):
+
+        if isinstance(CursorShape.ArrowCursor, int) and not isinstance(cursor, int):
             return cursor.value == CursorShape.ArrowCursor
         else:
             return cursor == CursorShape.ArrowCursor

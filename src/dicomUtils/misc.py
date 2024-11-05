@@ -152,12 +152,15 @@ def dosma_volume_from_path(path, parent_qobject = None, reorient_data = True, so
                     multi_dicom_dataset = load_multi_dicom(dataset)
                     # this is a multi dicom dataset
                     # let the user choose which dataset to load
-                    dataset_key, accept = QInputDialog.getItem(parent_qobject,
+                    if len(multi_dicom_dataset) == 1:
+                        dataset_key = list(multi_dicom_dataset.keys())[0]
+                    else:
+                        dataset_key, accept = QInputDialog.getItem(parent_qobject,
                                                                "Multi dicom",
                                                                "Choose dataset to load",
                                                                list(multi_dicom_dataset.keys()),
                                                                editable=False)
-                    if not accept: return
+                        if not accept: return
                     header_list = multi_dicom_dataset[dataset_key][1]
                     data = multi_dicom_dataset[dataset_key][0].astype(np.float32)
                 else:
